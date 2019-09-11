@@ -16,6 +16,7 @@ module Net # :nodoc:
   end
 end
 require 'socket'
+require 'socksify'
 
 require 'net/ber'
 require 'net/ldap/pdu'

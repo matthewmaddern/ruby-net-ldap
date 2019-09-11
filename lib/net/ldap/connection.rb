@@ -710,7 +710,16 @@ class Net::LDAP::Connection #:nodoc:
   # Wrap around Socket.tcp to normalize with other Socket initializers
   class DefaultSocket
     def self.new(host, port, socket_opts = {})
-      Socket.tcp(host, port, socket_opts)
+      if ENV["QUOTAGUARDSTATIC_URL"] != nil
+        # puts 'quotaguard url is present'
+        socks = URI.parse(ENV["QUOTAGUARDSTATIC_URL"].to_s)
+        puts socks
+        # http://dl2bwsbvp46amx:6wXLQMKgHC2axiff_wTNT0Phtw@us-east-static-02.quotaguard.com:9293
+        # Scoket.tcp()
+      else
+        puts 'quotaguard url is NOT present'
+        Socket.tcp(host, port, socket_opts)
+      end
     end
   end
 end # class Connection
