@@ -708,16 +708,27 @@ class Net::LDAP::Connection #:nodoc:
   private
 
   # Wrap around Socket.tcp to normalize with other Socket initializers
+  # Wrap around Socket.tcp to normalize with other Socket initializers
   class DefaultSocket
     def self.new(host, port, socket_opts = {})
-      if ENV["QUOTAGUARDSTATIC_URL"] != nil
-        # puts 'quotaguard url is present'
-        socks = URI.parse(ENV["QUOTAGUARDSTATIC_URL"].to_s)
-        puts socks
-        # http://dl2bwsbvp46amx:6wXLQMKgHC2axiff_wTNT0Phtw@us-east-static-02.quotaguard.com:9293
-        # Scoket.tcp()
+
+      # see: https://github.com/quotaguard/ruby-net-ldap/commit/66b436c8322de05e999d36c3a9edaf26c26d167c
+      # for the reference to how this was implemented
+
+      if ENV["QUOTAGUARDSTATIC_URL"].present?
+
+        # our quotaguard url 
+        socks = URI.parse ENV["QUOTAGUARDSTATIC_URL"]
+        
+        # socks socket config
+        TCPSOCKSSocket::socks_port     = 1080
+        TCPSOCKSSocket::socks_server   = socks.host
+	      TCPSOCKSSocket::socks_username = socks.user
+        TCPSOCKSSocket::socks_password = socks.password
+
+        # create and return the socks socket, for ldap queries to be routed through 
+        TCPSOCKSSocket.new(host, port, socket_opts)
       else
-        puts 'quotaguard url is NOT present'
         Socket.tcp(host, port, socket_opts)
       end
     end
