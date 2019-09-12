@@ -723,7 +723,7 @@ class Net::LDAP::Connection #:nodoc:
         # socks socket config
         TCPSOCKSSocket::socks_port     = 1080
         TCPSOCKSSocket::socks_server   = socks.host
-	      TCPSOCKSSocket::socks_username = socks.user
+        TCPSOCKSSocket::socks_username = socks.user
         TCPSOCKSSocket::socks_password = socks.password
 
         # create and return the socks socket, for ldap queries to be routed through 
